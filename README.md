@@ -57,4 +57,4 @@ python3 divecha/scripts/run_codex_loop.py <task>.spec.md --cwd <repo-root> --onc
 
 ## License
 
-No license has been declared yet.
+MIT License. See `LICENSE`.
