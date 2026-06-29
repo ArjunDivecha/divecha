@@ -1,0 +1,4 @@
+interface:
+  display_name: "Divecha"
+  short_description: "Author and run gated implementation specs"
+  default_prompt: "Use $divecha to turn this build objective into a gated implementation spec."
