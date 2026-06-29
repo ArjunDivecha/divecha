@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import os
 import shlex
+import shutil
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -21,6 +22,28 @@ from validate_contract import load_contract, validate_data, write_contract  # no
 DEFAULT_AGENT_COMMAND = "codex -a never -s danger-full-access exec --skip-git-repo-check"
 
 
+def choose_shell() -> str:
+    candidates = [
+        os.environ.get("DIVECHA_SHELL"),
+        os.environ.get("SHELL"),
+        "/bin/zsh",
+        "/bin/bash",
+        "/bin/sh",
+        "zsh",
+        "bash",
+        "sh",
+    ]
+    for candidate in candidates:
+        if not candidate:
+            continue
+        if os.path.isabs(candidate) and os.path.exists(candidate):
+            return candidate
+        resolved = shutil.which(candidate)
+        if resolved:
+            return resolved
+    raise RuntimeError("no usable shell found for gate command execution")
+
+
 def run_shell(command: str, cwd: Path, timeout: int | None) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
         command,
@@ -29,7 +52,7 @@ def run_shell(command: str, cwd: Path, timeout: int | None) -> subprocess.Comple
         text=True,
         capture_output=True,
         timeout=timeout,
-        executable="/bin/zsh",
+        executable=choose_shell(),
     )
 
 
